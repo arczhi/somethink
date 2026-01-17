@@ -1,8 +1,9 @@
-name: Build executables for macOS and Windows
+name: Build and Release executables
 
 on:
   push:
-    branches: [ main ]
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -49,3 +50,31 @@ jobs:
         with:
           name: somethink-windows
           path: dist/main.exe
+
+  create-release:
+    needs: [build-macos, build-windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download macOS artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: somethink-macos
+          path: artifacts/macos
+      - name: Download Windows artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: somethink-windows
+          path: artifacts/windows
+      - name: Rename files
+        run: |
+          mv artifacts/macos/main artifacts/somethink-macos
+          mv artifacts/windows/main.exe artifacts/somethink-windows.exe
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            artifacts/somethink-macos
+            artifacts/somethink-windows.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
