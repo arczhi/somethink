@@ -1,0 +1,39 @@
+# Python dependencies for SomeThink
+
+# GUI Framework
+customtkinter>=5.2.0
+pillow>=10.0.0
+
+# Machine Learning & NLP - 使用兼容版本
+torch>=2.0.0
+sentence-transformers>=2.3.0
+bertopic>=0.15.0
+umap-learn>=0.5.3
+hdbscan>=0.8.29
+scikit-learn>=1.3.0
+numpy<2.0.0
+
+# Text Processing
+nltk>=3.8.0
+
+# File & Metadata Processing
+PyPDF2>=3.0.0
+python-docx>=1.0.0
+python-pptx>=0.6.21
+mutagen>=1.47.0
+
+# File System Monitoring
+watchdog>=3.0.0
+
+# Utilities
+tqdm>=4.66.0
+python-dotenv>=1.0.0
+psutil>=5.9.0
+
+# Optional: OCR support for images
+# pytesseract>=0.3.10
+
+# Development Dependencies (optional)
+# pytest>=7.4.0
+# black>=23.0.0
+# flake8>=6.0.0
