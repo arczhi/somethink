@@ -24,11 +24,14 @@ jobs:
         run: |
           pyinstaller --onedir --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
           cd dist && mv main somethink-macos && cd ..
+      - name: Create macOS zip
+        run: |
+          cd dist && zip -r somethink-macos.zip somethink-macos && cd ..
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
-          name: somethink-macos
-          path: dist/somethink-macos
+          name: somethink-macos-zip
+          path: dist/somethink-macos.zip
 
   build-windows:
     runs-on: windows-latest
@@ -47,11 +50,14 @@ jobs:
         run: |
           pyinstaller --onedir --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
           cd dist && ren main somethink-windows || mv main somethink-windows && cd ..
+      - name: Create Windows zip
+        run: |
+          powershell -Command "Compress-Archive -Path dist/somethink-windows -DestinationPath dist/somethink-windows.zip"
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
-          name: somethink-windows
-          path: dist/somethink-windows
+          name: somethink-windows-zip
+          path: dist/somethink-windows.zip
 
   create-release:
     needs: [build-macos, build-windows]
@@ -61,18 +67,18 @@ jobs:
       - name: Download macOS artifact
         uses: actions/download-artifact@v4
         with:
-          name: somethink-macos
-          path: artifacts
+          name: somethink-macos-zip
+          path: release-artifacts
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
-          name: somethink-windows
-          path: artifacts
+          name: somethink-windows-zip
+          path: release-artifacts
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/somethink-macos
-            artifacts/somethink-windows
+            release-artifacts/somethink-macos.zip
+            release-artifacts/somethink-windows.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
