@@ -22,12 +22,13 @@ jobs:
           pip3 install -r requirements-minimal.txt || pip3 install -r requirements.txt || true
       - name: Build macOS executable
         run: |
-          pyinstaller --onefile --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
+          pyinstaller --onedir --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
+          cd dist && mv main somethink-macos && cd ..
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
           name: somethink-macos
-          path: dist/main
+          path: dist/somethink-macos
 
   build-windows:
     runs-on: windows-latest
@@ -44,12 +45,13 @@ jobs:
           pip install -r requirements-minimal.txt || pip install -r requirements.txt || exit 0
       - name: Build Windows executable
         run: |
-          pyinstaller --onefile --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
+          pyinstaller --onedir --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
+          cd dist && ren main somethink-windows || mv main somethink-windows && cd ..
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
           name: somethink-windows
-          path: dist/main.exe
+          path: dist/somethink-windows
 
   create-release:
     needs: [build-macos, build-windows]
@@ -60,21 +62,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: somethink-macos
-          path: artifacts/macos
+          path: artifacts
       - name: Download Windows artifact
         uses: actions/download-artifact@v4
         with:
           name: somethink-windows
-          path: artifacts/windows
-      - name: Rename files
-        run: |
-          mv artifacts/macos/main artifacts/somethink-macos
-          mv artifacts/windows/main.exe artifacts/somethink-windows.exe
+          path: artifacts
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             artifacts/somethink-macos
-            artifacts/somethink-windows.exe
+            artifacts/somethink-windows
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,8 +9,8 @@ from pathlib import Path
 
 # 添加项目根目录到Python路径
 if getattr(sys, 'frozen', False):
-    # PyInstaller打包后的环境
-    app_dir = Path(sys.executable).parent
+    # PyInstaller打包后的环境 (onedir模式下_internal目录同级)
+    app_dir = Path(sys.executable).parent.parent
 else:
     # 本地开发环境
     app_dir = Path(__file__).parent
