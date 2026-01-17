@@ -2,8 +2,7 @@ name: Build and Release executables
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -74,11 +73,13 @@ jobs:
         with:
           name: somethink-windows-zip
           path: release-artifacts
-      - name: Create Release
+      - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
             release-artifacts/somethink-macos.zip
             release-artifacts/somethink-windows.zip
+          tag_name: latest
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
