@@ -47,20 +47,19 @@ class TopicModel:
             try:
                 from sentence_transformers import SentenceTransformer
                 import torch
-                
                 print(f"正在加载嵌入模型: {self.model_name}")
-                
-                # 修复meta tensor问题：使用device参数明确指定设备
-                device = 'cpu'  # 默认使用CPU
-                
-                # 尝试加载模型，禁用meta设备
+                # 自动检测GPU
+                if torch.cuda.is_available():
+                    device = 'cuda'
+                    print("检测到GPU，使用GPU加速")
+                else:
+                    device = 'cpu'
+                    print("未检测到GPU，使用CPU")
                 self.embedding_model = SentenceTransformer(
                     self.model_name,
                     device=device
                 )
-                
                 print("嵌入模型加载完成")
-            
             except Exception as e:
                 print(f"加载嵌入模型失败: {e}")
                 # 如果失败，尝试降级方案：不使用语义搜索
