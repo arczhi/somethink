@@ -22,7 +22,7 @@ jobs:
           pip3 install -r requirements-minimal.txt || pip3 install -r requirements.txt || true
       - name: Build macOS executable
         run: |
-          pyinstaller --onefile --windowed main.py
+          pyinstaller --onefile --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
       - name: Upload macOS artifact
         uses: actions/upload-artifact@v4
         with:
@@ -44,7 +44,7 @@ jobs:
           pip install -r requirements-minimal.txt || pip install -r requirements.txt || exit 0
       - name: Build Windows executable
         run: |
-          pyinstaller --onefile --windowed main.py
+          pyinstaller --onefile --windowed --collect-all utils --collect-all data --collect-all engine --collect-all models --collect-all gui main.py
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v4
         with:
